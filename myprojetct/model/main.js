@@ -144,43 +144,47 @@ var vue = new Vue({
         var fxdashboard2 = echarts.init(document.getElementById('fxdashboard2'));
         // 指定图表的配置项和数据
         option = {
-        color: ['#3398DB'],
-        tooltip : {
-            trigger: 'axis',
-            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        xAxis : [
-            {
-                type : 'category',
-                data : name,
-                axisTick: {
-                    alignWithLabel: true
+            tooltip : {
+                trigger: 'axis'
+            },
+            legend: {
+              y : 'bottom',
+                data:this.saleAnalysis.amount
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
                 }
-            }
-        ],
-        yAxis : [
-            {
-                type : 'value'
-            }
-        ],
-        series : [
-            {
-                name:'人均薪资',
-                type:'bar',
-                barWidth: '60%',
-                data:value
-            }
-        ]
-    };
-
+            },
+            calculable : true,
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap : true,
+                    data : name
+                }
+            ],
+            yAxis : [
+                {
+                    name: '薪资',
+                    type : 'value',
+                    scale:true,
+                }
+            ],
+            series : [
+                {
+                    name:'人均薪资',
+                    type:'bar',
+                    barWidth : 30,//柱图宽度
+                    data:value
+                }
+            ]
+        };      
         // 使用刚指定的配置项和数据显示图表。
         fxdashboard2.setOption(option);
         window.addEventListener("resize",function(){
