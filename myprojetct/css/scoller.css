@@ -1,0 +1,1 @@
+.scroll{position:fixed;right:10px;top:200px;width:100px;height:90px;cursor:pointer;display:none}.scroll>div{width:100px;height:45px;line-height:31px;text-align:center;font-size:35px;font-family:黑体;background-color:rgba(0,0,0,.2);color:#fff}.scroll>div:hover{background-color:rgba(0,0,0,.5)}.activetop{background:#bb8c8c;color:brown}.activetop,.show{display:block}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>个人服务系统</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../../css/enterprise.css">
+</head>
+ <body>
+  <div id="app" v-cloak>
+    <section class="top" style="z-index: 10;top:0;">
+      <h1 class="title">
+        <span>操作日志</span>
+      </h1>
+    </section>
+    <section class="col-md-12">
+      <div class="col-md-12" style="margin-top:60px;">
+        <el-table ref="multipleTable" :data="tableData" border tooltip-effect="dark" style="width: 100%;" :max-height="tableHeight">
+          <el-table-column  prop="username" label="操作人"></el-table-column>
+          <el-table-column  prop="name" label="日志事件" ></el-table-column>
+          <el-table-column  prop="state" label="状态" ></el-table-column>
+          <el-table-column  prop="time" label="时间" :formatter="dateFormat"></el-table-column>
+        </el-table>
+      </div>
+      <div class="col-md-12 block" style="float:right;">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"  style="float: right;margin-top:10px;">
+          </el-pagination>
+        </div>
+    </section>
+  </div>
+  <script src="../../model/vue.js"></script>
+  <script src="../../model/index.js"></script>
+  <script src="../../model/moment.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="../../model/log.js"></script>
+</body>
+</html>

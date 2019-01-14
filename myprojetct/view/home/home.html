@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>个人服务系统</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../../css/enterprise.css">
+  <style>
+    body{margin:0;}
+  </style>
+</head>
+ <body>
+  <div id="app" style="min-width: 1080px;" v-cloak>
+    <el-col :span="3" style="background: #545c64;" :style="height">
+      <el-menu class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#fff" >
+        <el-menu-item v-for="(item,index) in navdata" @click="gourl(item.href)">
+          <i class="el-icon-menu" style="color:#fff;"></i>
+          <span slot="title">{{item.regulate}}</span>
+        </el-menu-item>
+      </el-menu>
+    </el-col>
+    <el-col :span="21" style="height:56px;background: #545c64;">
+      <el-button type="info" @click="out" style="float:right; margin-right: 10px;margin-top: 3px;border-color: #fff;">退出</el-button>
+    </el-col>
+    <el-col :span="21" :style="height1">
+        <iframe name="iframename" v-bind:src="tourl" frameborder="0" width="100%" scrolling="auto" :style="height1" style="overflow: auto;"></iframe>
+    </el-col>
+  </div>
+<script src="../../model/vue.js"></script>
+<script src="../../model/index.js"></script>
+<script src="../../model/moment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="../../model/aside.js"></script>
+</body>
+</html>

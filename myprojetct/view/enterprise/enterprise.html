@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>个人服务系统</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../../css/enterprise.css">
+</head>
+ <body>
+  <div id="app" v-cloak>
+    <section class="top" style="z-index: 10;top:0;">
+      <h1 class="title">
+        <span>客户管理</span>
+        <el-tooltip placement="right">
+          <div slot="content" style="font-size: 12px;">会员：登录或者添加的会员。</div>
+          <span class="el-icon-warning" style="font-size: 12px;color: #409eff;">会员注释</span>
+        </el-tooltip>
+      </h1>
+      <div class="search">
+          <el-button type="primary" @click="addNewEnterprise">新建</el-button>
+      </div>
+    </section>
+    <section class="col-md-12">
+      <div style="padding: 0;margin-top: 10px;margin-top: 60px;" id="well_sl">
+        <div class="col-md-12 form-group well" style="width: 98%;margin-left: 1%;height:50px;">
+          <el-col :span="4" style="margin-top: 10px;height: 40px;">
+            <el-form :model="form" label-width="100px" class="demo-ruleForm">
+              <el-form-item label="会员名称" prop="typeId">
+                  <el-input v-model="select.user" auto-complete="off" clearable @change="change" class="brand"></el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+      </div>
+    </section>
+    <section class="col-md-12">
+      <div class="col-md-12" style="margin-top:15px;">
+        <el-table ref="multipleTable" :data="tableData" border tooltip-effect="dark" style="width: 100%;" :max-height="tableHeight">
+          <el-table-column  prop="user" label="名称" show-overflow-tooltip></el-table-column>
+          <el-table-column  prop="pass" label="密码" ></el-table-column>
+          <el-table-column  prop="time" label="时间" :formatter="dateFormat"></el-table-column>
+          <el-table-column  label="操作" >
+            <template scope="scope">
+              <el-button type="success" @click="hasComplete(scope.row.id,scope.row.user)" style="height: 30px;line-height: 0;">修改</el-button>
+              <el-button type="primary" @click="hasCancel(scope.row.id,scope.row.user)" style="height: 30px;line-height: 0;">删除</el-button>       
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="col-md-12 block" style="float:right;">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"  style="float: right;margin-top:10px;">
+          </el-pagination>
+        </div>
+    </section>
+    <section>
+      <!--新建、修改客户公用表单-->
+      <el-dialog :title="title_enterprise[EnterpriseStatus]" :visible.sync="dialogCostoms" style="display:none;">
+        <el-col :span="24">
+          <el-form @submit.prevent="submit" ref="form" :model="client" :rules="rules">
+            <el-form-item label="名称" :label-width="formLabelWidth">
+              <el-input v-model="client.user" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" :label-width="formLabelWidth">
+              <el-input type="password" v-model="client.pass" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="首次合作日期" :label-width="formLabelWidth">
+              <el-date-picker v-model="client.time" type="date" placeholder="选择日期" :picker-options="pickerOptions1" style="width:100%;" value-format="timestamp">
+              </el-date-picker>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogCostoms = false">取 消</el-button>
+          <el-button type="primary" @click="dialogAdd">确 定</el-button>
+        </div>
+      </el-dialog>
+    </section>
+  </div>
+  <script src="../../model/vue.js"></script>
+  <script src="../../model/index.js"></script>
+  <script src="../../model/moment.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="../../model/enterprise.js"></script>
+</body>
+</html>

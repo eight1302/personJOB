@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>个人服务系统</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../../css/enterprise.css">
+  <style>
+    body{margin:0;}
+   
+  </style>
+</head>
+ <body>
+    <div id="app"  v-cloak>
+      <section class="col-md-12">
+        <el-col :span="24" style="border:1px solid #eee;margin-bottom:10px;">
+          <el-col :span="24" class="fxtital">
+            <span >地域程序员薪资水平</span>
+            <el-button type="primary" @click="addregion" style="float: right;height: 35px;border: 1px solid #fff;margin-top: 2px;margin-right: 10px;">新增地域</el-button>
+          </el-col>
+          <el-col :span="24">
+            <div id="fxdashboard2" class="echare1" style="border:none;height:328px;"></div>
+          </el-col>
+        </el-col>
+      </section>
+      <!-- 客户数据分析 -->
+      <section  class="col-md-12 client" style="margin-top: 20px;">
+        <el-col class="col-md-6" style="padding:0 5px;">
+          <el-col :span="24" style="border:1px solid #eee;padding-bottom: 10px;">
+            <el-col :span="24"  class="fxtital">
+              <span style="padding-left:30px;color:#fff;">就业趋势分析</span>
+            </el-col>
+            <el-col :span="24" style="margin-top:15px;">
+              <el-col :span="3">
+                <el-card class="box-card cardmonth" style="height:300px;">
+                  <div class="text item">
+                    <el-col :span="24" class="cardlist" style="color: #409eff;line-height: 90px;">{{clienData.data.after}}%</el-col>
+                    <el-tooltip placement="bottom">
+                      <div slot="content">在校实习生</div>
+                      <el-col :span="24" class="carddetail">在校实习生</el-col>
+                    </el-tooltip>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="3">
+                <el-card class="box-card cardmonth" style="height:300px;">
+                  <div class="text item">
+                    <el-col :span="24" class="cardlist" style="color: #8e74f1;line-height: 90px;">{{clienData.data.news}}%</el-col>
+                    <el-tooltip placement="bottom">
+                      <div slot="content">毕业生</div>
+                      <el-col :span="24" class="carddetail">应届毕业生</el-col>
+                    </el-tooltip>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="3">
+                <el-card class="box-card cardmonth" style="height:300px;">
+                  <div class="text item">
+                      <el-col :span="24" class="cardlist" style="color: #d48164;line-height: 90px;">{{clienData.data.before}}%</el-col>
+                      <el-tooltip placement="bottom">
+                        <div slot="content">社招就业人</div>
+                        <el-col :span="24" class="carddetail">往届毕业生</el-col>
+                      </el-tooltip>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="15">
+                <el-card class="box-card cardmonth" style="height:300px; width: 99%; margin-left: 0.5%;">
+                  <div class="text item">
+                      <div id="mychartcus" style="height:270px;"></div>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-col>
+          </el-col>
+        </el-col>  
+      </section>
+      <!--客户趋势分析-->
+      <section  class="col-md-12" style="margin-top: 20px;">
+        <el-col class="col-md-6" style="padding:0 5px;">
+          <el-col :span="24" style="border:1px solid #eee;">
+            <el-col :span="24"  class="fxtital">
+              <span style="padding-left:30px;color:#fff;">客户趋势分析</span>
+            </el-col>
+            <el-col :span="24" style="margin-top:15px;">
+                <div id="mychartcustomer"  class="echare1" style="border:none;"></div>
+            </el-col>
+          </el-col>
+        </el-col>
+      </section>
+      <!--销售数据分析-->
+      <section  class="col-md-12 sale" style="margin-top: 20px;">
+        <el-col :span="24" style="border:1px solid #eee;padding-bottom: 10px;">
+          <!--年展示的数据-->
+          <el-col :span="24">
+            <el-col :span="24" style="margin-top:15px;">
+              <el-col :span="6">
+                <el-card class="box-card cardmonth" style="height:180px;">
+                  <div class="text item">
+                    <el-col :span="24" class="cardlist" style="color: #409eff;line-height: 65px;">{{section.target?section.target:'0'}}元</el-col>
+                    <el-tooltip placement="bottom">
+                      <div slot="content">分析部目标销售额</div>
+                      <el-col :span="24" class="carddetail">目标销售额</el-col>
+                    </el-tooltip>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="6">
+                <el-card class="box-card cardmonth" style="height:180px;">
+                  <div class="text item">
+                    <el-col :span="24" class="cardlist" style="color: #d48164;line-height: 65px;">{{section.accomplish?section.accomplish:'0'}}元</el-col>
+                    <el-tooltip placement="bottom">
+                      <div slot="content">分销部完成的销售额</div>
+                      <el-col :span="24" class="carddetail">完成销售额</el-col>
+                    </el-tooltip>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="6">
+                <el-card class="box-card cardmonth" style="height:180px;">
+                  <div class="text item">
+                    <el-col :span="24" class="cardlist"  style="color: #8e74f1;line-height: 65px;">{{section.finishingRate!='NaN'?section.finishingRate:'0'}}%</el-col>
+                    <el-tooltip placement="bottom">
+                      <div slot="content">分销部的销售额完成率</div>
+                      <el-col :span="24" class="carddetail">完成率</el-col>
+                    </el-tooltip>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="6">
+                <el-card class="box-card cardmonth" style="height:180px;">
+                  <div class="text item">
+                    <el-col :span="24" class="cardlist" style="color: #d48164;line-height: 65px;">{{section.clientSale?section.clientSale:'0'}}元</el-col>
+                    <el-tooltip placement="bottom">
+                      <div slot="content">分销部所有品牌新合作的客户的总销售额</div>
+                      <el-col :span="24" class="carddetail">新增客户销售额</el-col>
+                    </el-tooltip>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-col>
+          </el-col>
+        </el-col>
+      </section>
+      <!--销售趋势分析-->
+      <section  class="col-md-12" style="margin-top: 20px;">
+        <el-col class="col-md-6" style="padding:0 5px;">
+          <el-col :span="24" style="border:1px solid #eee;padding-bottom: 20px;">
+              <el-col :span="24"  class="fxtital">
+                <span style="padding-left:30px;color:#fff;">销售趋势分析</span>
+              </el-col>
+            <el-col :span="24" style="margin-top:15px;">
+                <div id="mychartsale"  class="echare1" style="border:none;"></div>
+            </el-col>
+          </el-col>
+        </el-col>
+      </section>
+      <!--控价数据统计放在后期做-->
+      <section class="col-md-12" style="margin-top: 20px;">
+        <section class="col-md-12" style="padding:0 5px;">
+          <el-col :span="24" style="border:1px solid #eee;">
+            <el-col :span="24"  class="fxtital">
+              <span style="padding-left:30px;color:#fff;">品牌合作机会分析</span>
+            </el-col>
+            <el-col :span="24" style="padding:0;">
+                <div id="mychartbrand" class="echare1" style="border:none;height:329px;"></div>
+              </el-col>
+          </el-col>
+        </section> 
+        <section class="col-md-12" style="padding:0 5px;">
+          <el-col :span="24" style="border:1px solid #eee;">
+            <el-col :span="24"  class="fxtital">
+              <span style="padding-left:30px;color:#fff;">销售漏斗</span>
+            </el-col>
+            <section class="col-md-12" style="padding:0 5px;">
+                <div id="main1"  class="echare1" style="border:none;height:329px;"></div>
+            </section>
+          </el-col>
+        </section> 
+      </section>
+      <el-dialog title="新增地域信息" :visible.sync="smsdialog" style="display:none;">
+          <el-form :model="regionadds" @submit.prevent="submit">
+            <el-form-item label="城市" :label-width="formLabelWidth">
+              <el-input v-model="regionadds.name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="薪资" :label-width="formLabelWidth">
+              <el-input v-model="regionadds.value" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="smsdialog = false" class="cancelsms">取 消</el-button>
+            <el-button type="primary" @click="smsbtn">确 定</el-button>
+          </div>
+        </el-dialog>
+    </div>
+<script src="../../model/vue.js"></script>
+<script src="../../model/index.js"></script>
+<script src="../../model/moment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="../../model/echarts.min.js"></script>
+<script src="../../model/echarts.min.js"></script>echarts.min
+<script src="../../model/main.js"></script>
+</body>
+</html>
