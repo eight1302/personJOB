@@ -92,60 +92,6 @@
           </el-col>
         </el-col>
       </section>
-      <!--销售数据分析-->
-      <section  class="col-md-12 sale" style="margin-top: 20px;">
-        <el-col :span="24" style="border:1px solid #eee;padding-bottom: 10px;">
-          <!--年展示的数据-->
-          <el-col :span="24">
-            <el-col :span="24" style="margin-top:15px;">
-              <el-col :span="6">
-                <el-card class="box-card cardmonth" style="height:180px;">
-                  <div class="text item">
-                    <el-col :span="24" class="cardlist" style="color: #409eff;line-height: 65px;">{{section.target?section.target:'0'}}元</el-col>
-                    <el-tooltip placement="bottom">
-                      <div slot="content">分析部目标销售额</div>
-                      <el-col :span="24" class="carddetail">目标销售额</el-col>
-                    </el-tooltip>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :span="6">
-                <el-card class="box-card cardmonth" style="height:180px;">
-                  <div class="text item">
-                    <el-col :span="24" class="cardlist" style="color: #d48164;line-height: 65px;">{{section.accomplish?section.accomplish:'0'}}元</el-col>
-                    <el-tooltip placement="bottom">
-                      <div slot="content">分销部完成的销售额</div>
-                      <el-col :span="24" class="carddetail">完成销售额</el-col>
-                    </el-tooltip>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :span="6">
-                <el-card class="box-card cardmonth" style="height:180px;">
-                  <div class="text item">
-                    <el-col :span="24" class="cardlist"  style="color: #8e74f1;line-height: 65px;">{{section.finishingRate!='NaN'?section.finishingRate:'0'}}%</el-col>
-                    <el-tooltip placement="bottom">
-                      <div slot="content">分销部的销售额完成率</div>
-                      <el-col :span="24" class="carddetail">完成率</el-col>
-                    </el-tooltip>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :span="6">
-                <el-card class="box-card cardmonth" style="height:180px;">
-                  <div class="text item">
-                    <el-col :span="24" class="cardlist" style="color: #d48164;line-height: 65px;">{{section.clientSale?section.clientSale:'0'}}元</el-col>
-                    <el-tooltip placement="bottom">
-                      <div slot="content">分销部所有品牌新合作的客户的总销售额</div>
-                      <el-col :span="24" class="carddetail">新增客户销售额</el-col>
-                    </el-tooltip>
-                  </div>
-                </el-card>
-              </el-col>
-            </el-col>
-          </el-col>
-        </el-col>
-      </section>
       <!--销售趋势分析-->
       <section  class="col-md-12" style="margin-top: 20px;">
         <el-col class="col-md-6" style="padding:0 5px;">
@@ -158,29 +104,6 @@
             </el-col>
           </el-col>
         </el-col>
-      </section>
-      <!--控价数据统计放在后期做-->
-      <section class="col-md-12" style="margin-top: 20px;">
-        <section class="col-md-12" style="padding:0 5px;">
-          <el-col :span="24" style="border:1px solid #eee;">
-            <el-col :span="24"  class="fxtital">
-              <span style="padding-left:30px;color:#fff;">品牌合作机会分析</span>
-            </el-col>
-            <el-col :span="24" style="padding:0;">
-                <div id="mychartbrand" class="echare1" style="border:none;height:329px;"></div>
-              </el-col>
-          </el-col>
-        </section> 
-        <section class="col-md-12" style="padding:0 5px;">
-          <el-col :span="24" style="border:1px solid #eee;">
-            <el-col :span="24"  class="fxtital">
-              <span style="padding-left:30px;color:#fff;">销售漏斗</span>
-            </el-col>
-            <section class="col-md-12" style="padding:0 5px;">
-                <div id="main1"  class="echare1" style="border:none;height:329px;"></div>
-            </section>
-          </el-col>
-        </section> 
       </section>
       <el-dialog title="新增地域信息" :visible.sync="smsdialog" style="display:none;">
           <el-form :model="regionadds" @submit.prevent="submit">
