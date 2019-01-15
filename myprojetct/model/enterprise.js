@@ -12,8 +12,10 @@ var vue = new Vue({
         typeId:''
     },
     input: '',
+    id : '',
     clientShow : [], //客户回写
     clientDetail : [],//客户信息
+    alltable : [],   //所有的数据
     pageSize : 10, //分页
     total : '' ,//总数
     pickerOptions1: {
@@ -170,7 +172,17 @@ var vue = new Vue({
     addNewEnterprise : function(){
       this.EnterpriseStatus = "add_enterprise";
       this.dialogCostoms = true;
-
+      this.db.transaction(function (tx) {
+        tx.executeSql('SELECT * FROM userData', [], function (tx, results) {
+           //处理id自增涨
+          var ids = new Array();
+          for(var i=0;i<results.rows.length;i++){
+            ids.push(results.rows[i].id);
+          }
+          vue.id = Math.max.apply(null, ids)+1;
+         }, null);
+      });
+     
     },
     
     //客户提交数据
@@ -187,7 +199,7 @@ var vue = new Vue({
       var data = this.clientprimsData();
       this.db.transaction(function (tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS userData (id,user,pass,time)');
-        tx.executeSql('INSERT INTO userData (id,user,pass,time) VALUES (?,?,?,?)',[vue.tableData.length+1,data.user,data.pass,data.time]);
+        tx.executeSql('INSERT INTO userData (id,user,pass,time) VALUES (?,?,?,?)',[vue.id,data.user,data.pass,data.time]);
         tx.executeSql('INSERT INTO log (username,name,state,time) VALUES (?,?,?,?)', [localStorage.getItem("user"),"添加会员名称:"+data.user,"添加成功",Date.parse(new Date())]);
         vue.dialogCostoms =  false;
         vue.closeDialog();

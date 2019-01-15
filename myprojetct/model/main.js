@@ -8,6 +8,7 @@ var vue = new Vue({
       this.pushregion();   //默认保存地域相关数据
       this.getregion();    //获取数据
       this.joinJob();      //就业比例
+      this.saleComent();
   },
   data:{
     form:{
@@ -69,10 +70,12 @@ var vue = new Vue({
         data : {
             after : '',
             news : '',
-            before : '',
+            before : ''
         },
-        datadetail : [],
-        series :[],
+        name : [],
+        index1 : [],
+        index2 :[],
+        index3 :[],
     },
     funnelld : { //漏斗图
         detail : [],
@@ -209,21 +212,20 @@ var vue = new Vue({
         });
     },
 
-    //就业数据处理
-    joinJob : function(){
+     //就业数据处理
+     joinJob : function(){
         var length = 0;
         this.db.transaction(function (tx) {
-            tx.executeSql('SELECT * FROM region', [], function (tx, results) {
+            tx.executeSql('CREATE TABLE IF NOT EXISTS jonbl (jobnumber,value)');
+            tx.executeSql('SELECT * FROM jonbl', [], function (tx, results) {
                 length = results.rows.length;
-               if(length<0){
-                    tx.executeSql('CREATE TABLE IF NOT EXISTS jonbl (jobnumber,value)');
+               if(length<=0){
                     tx.executeSql('INSERT INTO jonbl (jobnumber,value) VALUES (?,?)',["after",15000]);
                     tx.executeSql('INSERT INTO jonbl (jobnumber,value) VALUES (?,?)',["news",8000]);
                     tx.executeSql('INSERT INTO jonbl (jobnumber,value) VALUES (?,?)',["before",30000]);
                }
                vue.getJob();
             }, null);
-           
         });
     },
 
@@ -248,103 +250,96 @@ var vue = new Vue({
         this.clienData.data.before = (data[2].value/allNum).toFixed(2);
     },
 
+    //薪资分布趋势
+    saleComent : function(){
+        var length = 0;
+        var data = [
+            {name:"3k以下",index1:7500,index2:1200,index3:0},
+            {name:"3k-5k",index1:800,index2:6500,index3:1000},
+            {name:"5k-9k",index1:400,index2:11200,index3:6000},
+            {name:"9k-14k",index1:100,index2:600,index3:13500},
+            {name:"14k以上",index1:0,index2:0,index3:8000}
+        ];
+        this.db.transaction(function (tx) {
+            //index1在校,index2刚毕业,index3，毕业1年以上
+            tx.executeSql('CREATE TABLE IF NOT EXISTS saleComent (name,index1,index2,index3)'); 
+            tx.executeSql('SELECT * FROM saleComent', [], function (tx, results) {
+                length = results.rows.length;
+                if(length<=0){
+                    for(var i=0;i<data.length;i++){
+                    tx.executeSql('INSERT INTO saleComent (name,index1,index2,index3) VALUES (?,?,?,?)',[data[i].name,data[i].index1,data[i].index2,data[i].index3]);
+                    }
+                }
+                vue.getComent();
+            }, null);
+        });
+    },
+  
+    //获取数据
+    getComent : function(){
+        this.db.transaction(function (tx) {
+            //添加区域薪资数据
+            tx.executeSql('SELECT * FROM saleComent', [], function (tx, results) {
+                vue.dealComent(results.rows);
+            }, null);
+        });
+    },
 
-      //部门销售数据分析
-      departmentSale : function(url){
-          //请求数据
-         
-      },
-
-      //获取销售趋势分析的数据
-      saleTrand:function(url){
-         
-      },
-
-      //销售趋势分析数据处理
-      saleTrandEcharts : function(timeData,datashow){
-          //this.clientTime
-          var data1 = new Array(), //目标销售额
-              data2 = new Array(), //完成销售额
-              data3 = new Array(), //完成率
-              data4 = new Array(), //新增客户销售额
-              data5 = new Array(); //流水客户半年月均销售额
-          for(let i=0;i<datashow.length;i++){
-              for(let j=0;j<timeData.length;j++){
-                  if(timeData[j] == datashow[i].data_date){
-                      data1.push({'time':timeData[j],value:datashow[i].index33?Number(datashow[i].index33):0}); //目标销售额
-                      data2.push({'time':timeData[j],value:datashow[i].index16?Number(datashow[i].index16):0}); //完成销售额
-                      data3.push({'time':timeData[j],value:(((datashow[i].index16?Number(datashow[i].index16):0)/(datashow[i].index33?Number(datashow[i].index33):0))*100).toFixed(2)}); //完成率 
-                      data4.push({'time':timeData[j],value:datashow[i].index36?Number(datashow[i].index36):0}); //新增客户销售额
-                      data5.push({'time':timeData[j],value:datashow[i].index37?Number(datashow[i].index37).toFixed(2):0}); //流水客户半年月均销售额
-
-                  }else{
-                      data1.push({'time':timeData[j],value:0});
-                      data2.push({'time':timeData[j],value:0});
-                      data3.push({'time':timeData[j],value:0}); 
-                      data4.push({'time':timeData[j],value:0});
-                      data5.push({'time':timeData[j],value:0});  
-                  }
-              }
-          }
-
-          this.saleAnalysis.series = [
-              {
-                  name:'完成率',
-                  type:'line',
-                  stack: '',
-                  yAxisIndex: 1,
-                  data:this.heavy1(data3,timeData),
-                  itemStyle: {
-                      normal: {
-                          label: {
-                              show: true,
-                              positiong: 'top',
-                              formatter: '{c}%'
-                          }
-                      }
-                  }
-              },{
-                  name:'目标销售额',
-                  type:'line',
-                  stack: '',
-                  data:this.heavy1(data1,timeData),
-              },
-              {
-                  name:'完成销售额',
-                  type:'line',
-                  stack: '',
-                  data:this.heavy1(data2,timeData)
-              },
-              {
-                  name:'新增客户销售额',
-                  type:'line',
-                  stack: '',
-                  data:this.heavy1(data4,timeData)
-              },
-              {
-                  name:'流失客户半年月均销售额',
-                  type:'line',
-                  stack: '',
-                  data:this.heavy1(data5,timeData)
-              }
-          ];
-          //销售趋势分析折线图
-          this.fxtrend();
-       
-      },
+    //处理薪资范围
+    dealComent : function(data){
+        this.clienData.name.length = 0;
+        this.clienData.index1.length = 0;
+        this.clienData.index2.length = 0;
+        this.clienData.index3.length = 0;
+        for(var i=0;i<data.length;i++){
+            this.clienData.name.push(data[i].name);
+            this.clienData.index1.push(data[i].index1);
+            this.clienData.index2.push(data[i].index2);
+            this.clienData.index3.push(data[i].index3);
+        }
+        this.saleTrandEcharts();
+    },
 
 
-      //销售趋势分析折线图
-      fxtrend:function(){
-        var mychartsale= echarts.init(document.getElementById('mychartsale'));
+    //销售趋势分析数据处理
+    saleTrandEcharts : function(){
+        var series = [
+            {
+                name:'实习生',
+                type:'line',
+                stack: '',
+                data:this.clienData.index1
+            },
+            {
+                name:'应届生',
+                type:'line',
+                stack: '',
+                data:this.clienData.index2
+            },
+            {
+                name:'社会人员',
+                type:'line',
+                stack: '',
+                data:this.clienData.index3
+            }
+        ];
+        //销售趋势分析折线图
+        this.fxtrend(series);
+        
+    },
+
+
+    //销售趋势分析折线图
+    fxtrend:function(series){
+        var mychartcus= echarts.init(document.getElementById('mychartcus'));
         // 指定图表的配置项和数据
         option = {
             tooltip : {
                 trigger: 'axis'
             },
             legend: {
-              y : 'bottom',
-                data:this.saleAnalysis.amount
+            y : 'bottom',
+                data:["实习生","应届生","社会人员"]
             },
             toolbox: {
                 show : true,
@@ -361,7 +356,7 @@ var vue = new Vue({
                 {
                     type : 'category',
                     boundaryGap : false,
-                    data : this.saleAnalysis.month
+                    data : this.clienData.name
                 }
             ],
             yAxis : [
@@ -369,29 +364,30 @@ var vue = new Vue({
                     name: '金额',
                     type : 'value',
                     scale:true,
-                },{
-                    name: '完成率',
-                    type: 'value',
-                    scale:true,
-                    min: 0,
-                    max: 100,        // 计算最大值
-                    interval: Math.ceil(100 / 5),   //  平均分为5份
-                    axisLabel: {  
-                        show: true,    
-                        formatter: '{value} %'  
-                    }
-                    
                 }
             ],
-            series : this.saleAnalysis.series
+            series : series
         };        
 
         // 使用刚指定的配置项和数据显示图表。
-        mychartsale.setOption(option);
+        mychartcus.setOption(option);
         window.addEventListener("resize",function(){
             mychartsale.resize(); 
         });
+    },
+
+
+      //部门销售数据分析
+      departmentSale : function(url){
+          //请求数据
+         
       },
+
+      //获取销售趋势分析的数据
+      saleTrand:function(url){
+         
+      },
+
 
       /**
        * 客户趋势分析请求接口数据整合
