@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>个人服务系统</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../../css/enterprise.css">
+</head>
+ <body>
+  <div id="app" v-cloak>
+    <section class="top" style="z-index:10;top:0;">
+      <h1 class="title">
+        <span>客户跟进计划</span>
+        <span style="margin-left:15px;font-size: 12px;">状态说明：
+          <i class="el-icon-time" style="font-size: 12px;color: #409eff;">待完成</i>
+          <i class="el-icon-circle-check-outline" style="font-size: 12px;color: #67c23a;margin:0 5px;">已完成</i>
+          <i class="el-icon-circle-close-outline" style="font-size: 12px;color: #f56c6c;">已取消</i>
+        </span>
+      </h1>
+      <div class="search">
+        <el-button type="primary" @click="addvisit">新建</el-button>   
+      </div>
+    </section>
+    <section class="col-md-12">
+      <div style="padding: 0;margin-top: 60px;">
+        <div class="col-md-12 form-group well" style="width: 98%;margin-left: 1%;" :style="heightselect">
+          <el-col :span="6" style="margin-top: 10px;height: 40px;">
+            <el-form :model="form" label-width="100px" class="demo-ruleForm">
+              <el-form-item label="客户名称" prop="typeId">
+                <el-input v-model="select.customer_name" auto-complete="off" filterable  clearable @change="change" :style="width1"></el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="6" style="margin-top: 10px;height: 40px;">
+            <el-form :model="form" label-width="100px" class="demo-ruleForm">
+              <el-form-item label="联系人" prop="typeId">
+                <el-input v-model="select.contact_name" auto-complete="off" filterable  clearable @change="change" :style="width1"></el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="6" style="margin-top: 10px;height: 40px;">
+            <el-form :model="form" label-width="100px" class="demo-ruleForm">
+              <el-form-item label="计划状态" prop="typeId">
+                <el-select v-model="select.status" placeholder="请选择" @change="change" auto-complete="off" clearable :style="width1">
+                  <el-option v-for="item in playvisit" :label="item.visitname" :value="item.visttcode"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="6" style="margin-top: 10px;height: 40px;">
+            <el-form :model="form" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="跟进人" prop="typeId">
+                    <el-select v-model="select.follow_user_id" placeholder="请选择" filterable @change="change" auto-complete="off" clearable :style="width1">
+                        <el-option v-for="item in personData" :label="item.firstname" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="6" style="margin-top: 10px;height: 40px;">
+            <el-form :model="form" label-width="100px" class="demo-ruleForm">
+              <el-form-item label="跟进时间" prop="typeId">
+                <el-date-picker v-model="select.callback_date" type="daterange" value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期" @change="change" :style="width1">
+              </el-date-picker>
+              </el-form-item>
+          </el-form>
+         </el-col>
+      </div>
+    </section>
+    <!--表单-->
+    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" :default-sort = "{prop: 'date', order: 'descending'}" style="width: 100%" :max-height="tableHeight">
+      <el-table-column  sortable prop="status" label="计划状态" min-width="120">
+        <template scope="scope">                   
+          <p v-if="scope.row.status=='0'">
+            <el-tooltip placement="bottom">
+              <el-col slot="content">待完成</el-col>
+              <el-col :span="24" class="carddetail" style="text-align:center;">
+                <i class="el-icon-time" style="font-size: 25px;color: #409eff;"> </i>
+              </el-col>
+            </el-tooltip>
+          </p>
+          <p v-else-if="scope.row.status=='1'">
+            <el-tooltip placement="bottom">
+              <el-col slot="content">已完成</el-col>
+              <el-col :span="24" class="carddetail" style="text-align:center;">
+                <i class="el-icon-circle-check-outline" style="font-size: 25px;color: #67c23a;"></i>
+              </el-col>
+            </el-tooltip>
+          </p>
+          <p v-else-if="scope.row.status=='-1'">
+            <el-tooltip placement="bottom">
+              <el-col slot="content">已取消</el-col>
+              <el-col :span="24" class="carddetail" style="text-align:center;">
+                <i class="el-icon-circle-close-outline" style="font-size: 25px;color: #f56c6c;"></i>
+              </el-col>
+            </el-tooltip>
+          </p>              
+        </template>
+      </el-table-column>
+      <el-table-column  sortable prop="planName" label="计划名称" min-width="140" show-overflow-tooltip>
+        <template scope="scope">
+          <span style="color: #008cee;cursor: pointer;"  @click="handleEdit(scope.row.id,scope.row.planName)">{{scope.row.planName?scope.row.planName:'--'}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column  sortable prop="customerName" label="客户名称" min-width="140" show-overflow-tooltip></el-table-column>
+      <el-table-column  sortable prop="contactName" label="联系人" min-width="140"></el-table-column>
+      <el-table-column  sortable prop="followUserName" label="跟进人" min-width="140"></el-table-column>
+      <el-table-column  sortable prop="callbackWay" label="跟进方式" min-width="140" show-overflow-tooltip></el-table-column>
+      <el-table-column  sortable prop="callbackDate" label="跟进时间" :formatter="dateFormat" min-width="140"></el-table-column>
+      <el-table-column  sortable prop="service_tel" label="操作" min-width="180">
+        <template scope="scope">                   
+          <span v-if="scope.row.status=='0'">
+            <el-button type="success" @click="hasComplete(1,scope.row.id)" style="height: 30px;line-height: 0;">完成</el-button>
+            <el-button type="info" @click="hasCancel(0,scope.row.id)" style="height: 30px;line-height: 0;">取消</el-button>
+          </span>        
+        </template>
+      </el-table-column>
+    </el-table>
+    <!--分页处理-->
+    <div class="col-md-12 block" style="float:right;">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100, 200]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"  style="float: right;margin-top:10px;">
+    </el-pagination>
+    <!--新建、修改表单共用模板-->
+    <el-dialog :title="title_visit[VisitStatus]" :visible.sync="dialogVisit"  style="display:none;">
+      <el-form :model="visitreturn" :rules="rules" @submit.prevent="submit">
+        <el-form-item label="跟进客户" :label-width="formLabelWidth" prop="customer_id">
+          <el-select v-model="visitreturn.customer_id" filterable clearable style="width:100%;" @change="getCustomer">
+            <el-option v-for="item in clientDetail" :label="item.introduce" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="跟进方式" :label-width="formLabelWidth" prop="callback_way">
+            <el-select v-model="visitreturn.callback_way" filterable style="width:100%;">
+                <el-option v-for="item in followPlayData" :label="item.typename" :value="item.typename"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="计划名称" :label-width="formLabelWidth" prop="plan_name">
+          <el-input v-model="visitreturn.plan_name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人" :label-width="formLabelWidth">
+          <el-select v-model="visitreturn.contact_id" placeholder="请选择" filterable auto-complete="off" clearable style="width:100%;">
+            <el-option v-for="item in crmsContent" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="跟进人" :label-width="formLabelWidth" prop="follow_user_id">
+          <el-select v-model="visitreturn.follow_user_id" placeholder="请选择" filterable auto-complete="off" clearable style="width:100%;">
+            <el-option v-for="item in personData" :label="item.firstname" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="跟进时间" :label-width="formLabelWidth" prop="callback_date">
+          <el-date-picker v-model="visitreturn.callback_date" type="datetime"  placeholder="选择日期" style="width:100%;"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="提醒时间" :label-width="formLabelWidth" prop="notice_time">
+          <el-select v-model="visitreturn.notice_time" filterable style="width:100%;">
+            <el-option v-for="item in setTimeData" :label="item.setName" :value="item.setid"></el-option>
+        </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisit = false">取 消</el-button>
+        <el-button type="primary" @click="dialogAdd">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!--完成、取消共用模板-->
+    <el-dialog :title="title_comcan[ComcanStatus]" :visible.sync="completeCancel"  style="display:none;">
+      <el-form :model="ComCanData" :rules="rulesComCal" @submit.prevent="submit">
+        <el-form-item label="跟进时间" :label-width="formLabelWidth" v-if="show_date" prop="update_time">
+          <el-date-picker v-model="ComCanData.update_time"  type="datetime" placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss" style="width:100%;"> </el-date-picker>
+        </el-form-item>
+        <el-form-item label="描述" :label-width="formLabelWidth" prop="remark">
+          <el-input type="textarea" :rows="5" placeholder="请输入内容"  v-model="ComCanData.remark"> </el-input>          
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="completeCancel = false">取 消</el-button>
+        <el-button type="primary" @click="update">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!--跟进记录详情展示-->
+    <div class="detail-bg" style="z-index:200;"></div>
+    <div class="detail" :style="width" style="z-index:2000;">
+      <el-col :span="24">
+        <div class="main">
+          <div class="col-md-12 head">
+            <el-col :span="18" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+              <span style="line-height: 80px;font-size: 25px;color: #ff6100;">{{visitShow.planName?visitShow.planName:'-'}}</span>
+            </el-col>
+            <el-col :span="6">
+              <el-row style="line-height: 80px;float: right;margin-right: 15px;" v-if="visitShow.status=='0'">
+                <el-button type="primary" icon="el-icon-edit" circle @click="editVisit(visitShow.id)"></el-button>
+              </el-row>
+            </el-col>
+          </div>
+          <div class="col-md-12">
+            <el-col :span="24">
+              <el-col :span="24" style="margin-top:10px;">
+                <el-col :span="24" class="saleteam">基本资料</el-col>
+                <el-col :span="24" class="saleresponsible">
+                  <ul>
+                    <li class="item item_top">
+                      <el-col :span="8" class="saledetail">创建人：</el-col> 
+                      <el-col :span="16" class="text">{{visitShow.createName?visitShow.createName:'-'}}</el-col>
+                    </li>
+                    <li class="item item_top">
+                      <el-col :span="8" class="saledetail">创建时间：</el-col> 
+                      <el-col :span="16" class="text">{{time(visitShow.createTime?visitShow.createTime:'-')}}</el-col>
+                    </li>
+                  </ul>
+                </el-col>
+              </el-col>
+            </el-col>
+          </div>
+          <div class="col-md-12">
+            <el-col :span="24">
+              <el-col :span="24" style="margin-top:10px;">
+                  <el-col :span="24" class="saleteam">计划内容</el-col>
+                  <el-col :span="24" class="saleresponsible" v-bind:class="{ 'class-a': isA, 'class-b': isB }">
+                    <ul>
+                      <li class="item item_top">
+                        <el-col :span="6" class="saledetail">跟进名称：</el-col> 
+                        <el-col :span="18" class="text">{{visitShow.planName?visitShow.planName:'-'}}</el-col>
+                      </li>
+                      <li class="item item_top">
+                        <el-col :span="6" class="saledetail">跟进客户：</el-col> 
+                        <el-col :span="18" class="text">{{visitShow.customerName?visitShow.customerName:'-'}}</el-col>
+                      </li>
+                      <li class="item item_top">
+                        <el-col :span="6" class="saledetail">计划状态：</el-col>
+                        <el-col :span="18" class="text">              
+                          <p v-if="visitShow.status=='0'" style="color:#409eff;margin-bottom: 0;">待完成</p>
+                          <p v-else-if="visitShow.status=='1'" style="color:#67c23a;margin-bottom: 0;">已完成
+                            <a @click="PageTypes(followUrl,'跟进记录')" style="color:#409eff;margin-left:20px;">查看跟进记录</a>
+                          </p>
+                          <p v-else-if="visitShow.status=='-1'" style="color:#f56c6c;margin-bottom: 0;">已取消</p>              
+                        </el-col>
+                      </li>
+                      <li class="item item_top">
+                        <el-col :span="6" class="saledetail">联系人：</el-col> 
+                        <el-col :span="18" class="text">{{visitShow.contactName?visitShow.contactName :'-'}}</el-col>
+                      </li>
+                      <li class="item item_top">
+                          <el-col :span="6" class="saledetail">跟进方式：</el-col> 
+                          <el-col :span="18" class="text">{{visitShow.callbackWay?visitShow.callbackWay :'-'}}</el-col>
+                        </li>
+                      <li class="item item_top">
+                        <el-col :span="6" class="saledetail">跟进人：</el-col> 
+                        <el-col :span="18" class="text">{{visitShow.followUserName?visitShow.followUserName:'-'}}</el-col>
+                      </li>
+                      <li class="item item_top">
+                        <el-col :span="6" class="saledetail">跟进时间：</el-col> 
+                        <el-col :span="18" class="text" >{{time(visitShow.callbackDate?visitShow.callbackDate:'-')}}
+                          <span v-if="visitShow.status=='0'">
+                            <span v-if="getVisitTime(visitShow.callbackDate,visitShow.noticeTime)=='未处理'" style="color:#f56c6c;">
+                                {{getVisitTime(visitShow.callbackDate,visitShow.noticeTime)}}
+                            </span>
+                            <span v-if="getVisitTime(visitShow.callbackDate,visitShow.noticeTime)=='已提醒'" style="color:#67c23a;">
+                                {{getVisitTime(visitShow.callbackDate,visitShow.noticeTime)}}
+                            </span>
+                            <span v-if="getVisitTime(visitShow.callbackDate,visitShow.noticeTime)=='等待提醒'" style="color:#409eff;">
+                                {{getVisitTime(visitShow.callbackDate,visitShow.noticeTime)}}
+                            </span>
+                          </span>
+                        </el-col>
+                      </li>
+                      <li class="item item_top">
+                        <el-col :span="6" class="saledetail">提醒时间：</el-col> 
+                        <el-col :span="18" class="text">{{remind(visitShow.noticeTime?visitShow.noticeTime:'-')}}</el-col>
+                      </li>
+                    </ul>
+                  </el-col>
+              </el-col>
+            </el-col>
+          </div>
+          <div class="col-md-12" style="height:200px;">
+            <el-col :span="24"  v-if="visitShow.status!='0'">
+              <el-col :span="24" style="margin-top:10px;">
+                <el-col :span="24" class="saleteam">
+                    <p v-if="visitShow.status=='1'" style="color:#409eff;">完成信息</p>
+                    <p v-if="visitShow.status=='-1'" style="color:#f56c6c;">取消原因</p>
+                </el-col>
+                <el-col :span="24" class="saleresponsible">
+                  <ul>
+                    <li class="item item_top"  v-if="visitShow.status=='1'">
+                      <el-col :span="8" class="saledetail">完成时间：</el-col> 
+                      <el-col :span="16" class="text">{{visitShow.updateTime?time(visitShow.updateTime):'-'}}</el-col>
+                    </li>
+                    <li class="item item_top">
+                        <el-col :span="8" class="saledetail">详细描述：</el-col> 
+                        <el-col :span="16" class="text">{{visitShow.remark?visitShow.remark:'-'}}</el-col>
+                      </li>
+                  </ul>
+                </el-col>
+              </el-col>
+            </el-col>
+          </div>
+        </div>
+      </el-col>
+    </div>
+  </div>
+  
+  <script src="../../model/vue.js"></script>
+  <script src="../../model/index.js"></script>
+  <script src="../../model/moment.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="../../model/client.js"></script>
+</body>
+</html>
