@@ -134,17 +134,17 @@ var vue = new Vue({
 
     //监听搜索条件的变化
     change:function() {
-      this.getData(this.select.user,1,10);  //方法相互调用
+      this.getData(this.select,1,10);  //方法相互调用
     },
 
     //每页显示数据量变更
     handleSizeChange: function(val) {
-      this.getData(this.select.user,this.currentPage, val);  //方法相互调用
+      this.getData(this.select,this.currentPage, val);  //方法相互调用
     },
 
     //页码变更
     handleCurrentChange: function(val) {
-      this.getData(this.select.user,val,this.pageSize);  //方法相互调用
+      this.getData(this.select,val,this.pageSize);  //方法相互调用
     },
     //添加客户表单信息
     clientprimsData : function(){
@@ -165,7 +165,6 @@ var vue = new Vue({
         this.$message('会员数据不能为空!');
         return false;
       }
-       
     },
 
     //点击添加客户按钮
@@ -182,7 +181,6 @@ var vue = new Vue({
           vue.id = Math.max.apply(null, ids)+1;
          }, null);
       });
-     
     },
     
     //客户提交数据

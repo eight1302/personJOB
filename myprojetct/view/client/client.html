@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>个人服务系统</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../../css/enterprise.css">
+</head>
+ <body>
+  <div id="app" v-cloak>
+    <section class="top" style="z-index: 10;top:0;">
+      <h1 class="title">
+        <span>客户管理</span>
+      </h1>
+      <div class="search">
+          <el-button type="primary" @click="addNewEnterprise">新建</el-button>
+          <!-- <el-button type="primary" id="btn_download3" class="btn btn-success" onClick ="$('.el-table__fixed').tableExport({ type: 'excel', escape: 'false'},'客户导出')">导出</el-button> --> 
+      </div>
+    </section>
+    <section class="col-md-12">
+      <div style="padding: 0;margin-top: 10px;margin-top: 60px;" id="well_sl">
+        <div class="col-md-12 form-group well" style="width: 98%;margin-left: 1%;">
+          <el-col :span="4" style="margin-top: 10px;height: 40px;">
+            <el-form :model="form" label-width="100px" class="demo-ruleForm">
+              <el-form-item label="客户名称" prop="typeId">
+                  <el-input v-model="select.name" auto-complete="off" clearable @change="change" class="brand"></el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="4" style="margin-top: 10px;height: 40px;">
+            <el-form :model="form" label-width="100px" class="demo-ruleForm">
+              <el-form-item label="负责人" clearable prop="typeId">
+                <el-select v-model="select.user" filterable @change="change" clearable placeholder="请选择" style="border-radius: 0 5px 5px 0;">
+                  <el-option v-for="item in options1" :key="item.id" :label="item.user" :value="item.user"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </el-col>
+      </div>
+    </section>
+    <section class="col-md-12" style="padding: 0;">
+      <div class="col-md-12">
+        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" :default-sort = "{prop: 'date', order: 'descending'}" style="width: 100%;">
+          <el-table-column sortable prop="user" label="负责人" min-width="120" show-overflow-tooltip fixed></el-table-column>
+          <el-table-column  sortable label="客户名称" prop="name" min-width="120" show-overflow-tooltip fixed></el-table-column>
+          <el-table-column  sortable prop="contactsname" label="联系人" min-width="120"></el-table-column>
+          <el-table-column  sortable prop="contactstel" label="联系电话" min-width="120"></el-table-column>
+          <el-table-column  sortable prop="importance" label="重要程度" min-width="120">
+            <template scope="scope">                   
+              <el-rate v-model="scope.row.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" disabled></el-rate>
+            </template>
+          </el-table-column>
+          <el-table-column  sortable prop="province" label="省" :formatter="addreprovince" min-width="120" ></el-table-column>
+          <el-table-column  sortable prop="city" label="市" :formatter="addrecity" min-width="120"></el-table-column>
+          <el-table-column  sortable prop="district" label="区(县)" :formatter="addredistrict" min-width="120" show-overflow-tooltip></el-table-column>
+          <el-table-column  sortable prop="address" label="客户地址" min-width="120" show-overflow-tooltip></el-table-column>
+          <el-table-column  label="操作" min-width="200" >
+            <template scope="scope">
+              <el-button type="success" @click="hasComplete(scope.row.id,scope.row.name)" style="height: 30px;line-height: 0;">修改</el-button>
+              <el-button type="primary" @click="hasCancel(scope.row.id,scope.row.name)" style="height: 30px;line-height: 0;">删除</el-button>       
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="col-md-12 block" style="float:right;">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"  style="float: right;margin-top:10px;">
+          </el-pagination>
+        </div>
+    </section>
+    <section>
+      <!--新建、修改客户公用表单-->
+      <el-dialog :title="title_enterprise[EnterpriseStatus]" :visible.sync="dialogCostoms" style="display:none;">
+        <el-col :span="24">
+          <el-form @submit.prevent="submit" ref="form" :model="client" :rules="rules">
+            <el-form-item label="负责人" :label-width="formLabelWidth" prop="user">
+              <el-select v-model="client.user" filterable placeholder="请选择"  style="width:100%;border-radius: 0 5px 5px 0;" >
+                <el-option v-for="item in options1" :key="item.id" :label="item.user" :value="item.user"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="客户名称" :label-width="formLabelWidth"  prop="name">
+              <el-input v-model="client.name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="联系人" :label-width="formLabelWidth">
+              <el-input v-model="client.contacts_name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="联系电话" :label-width="formLabelWidth">
+              <el-input v-model="client.contacts_tel" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="重要程度" :label-width="formLabelWidth">
+              <el-rate v-model="client.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" style="margin-top:10px;"></el-rate>
+            </el-form-item>
+            <el-form-item label="客户地址" :label-width="formLabelWidth">
+              <el-select v-model="client.province" @change="choseProvince" placeholder="省级地区" style="width:155px;">
+                <el-option  v-for="item in province" :key="item.id" :label="item.value" :value="item.id"></el-option>
+              </el-select>
+              <el-select v-model="client.city" @change="choseCity" placeholder="市级地区" style="width:155px;margin: 0 11px;">
+                <el-option v-for="item in shi1" :key="item.id" :label="item.value" :value="item.id"></el-option>
+              </el-select>
+              <el-select v-model="client.district" @change="choseBlock"  placeholder="区级地区" style="width:155px;">
+                <el-option v-for="item in qu1" :key="item.id" :label="item.value" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="详细地址" :label-width="formLabelWidth">
+              <el-input v-model="client.address" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogCostoms = false">取 消</el-button>
+          <el-button type="primary" @click="dialogAdd">确 定</el-button>
+        </div>
+      </el-dialog>
+    </section>
+  </div>
+  <script src="../../model/vue.js"></script>
+  <script src="../../model/index.js"></script>
+  <script src="../../model/moment.js"></script>
+  <script src="../../model/customer.js"></script>
+</body>
+</html>

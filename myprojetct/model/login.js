@@ -39,6 +39,7 @@ var vue = new Vue({
       this.db.transaction(function (tx) {
          tx.executeSql('CREATE TABLE IF NOT EXISTS userData (id,user,pass,time)');
          tx.executeSql('CREATE TABLE IF NOT EXISTS log (username,name,state,time)');
+         tx.executeSql('CREATE TABLE IF NOT EXISTS clientdata (id,user,name,contactsname,contactstel,importance,province,city,district,address)');
          //判断数据中是否存在用户名，密码
          tx.executeSql('SELECT * FROM userData', [], function (tx, results) {
           if(results.rows.length<=0){
