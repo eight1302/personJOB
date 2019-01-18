@@ -17,6 +17,10 @@ var vue = new Vue({
         "href" : "../../view/client/client.html",
         "fontpig" : "fa fa-home"
       },{
+        "regulate" : "跟进计划",
+        "href" : "../../view/clientuser/client.html",
+        "fontpig" : "fa fa-home"
+      },{
         "regulate" : "管理员",
         "href" : "../../view/enterprise/enterprise.html",
         "fontpig" : "fa fa-user"
