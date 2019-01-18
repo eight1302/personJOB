@@ -389,36 +389,19 @@ var vue = new Vue({
           }
         }
       }else{
-        if(data.status == 0){
-          this.db.transaction(function (tx) {
-            tx.executeSql('SELECT * FROM folowdata WHERE status="'+data.status+'" order by id desc LIMIT '+star+','+end, [], function (tx, results) {
-              vue.tableData =results.rows;
-              if(results.rows.length<pageSize){
-                vue.pageSize = 10;
-              }else{
-                vue.pageSize = results.rows.length;
-              }
-              tx.executeSql('SELECT * FROM folowdata', [], function (tx, results) {
-                vue.total =  results.rows.length;
-                }, null);
+        this.db.transaction(function (tx) {
+          tx.executeSql('SELECT * FROM folowdata order by id desc LIMIT '+star+','+end, [], function (tx, results) {
+            vue.tableData =results.rows;
+            if(results.rows.length<pageSize){
+              vue.pageSize = 10;
+            }else{
+              vue.pageSize = results.rows.length;
+            }
+            tx.executeSql('SELECT * FROM folowdata', [], function (tx, results) {
+              vue.total =  results.rows.length;
               }, null);
-          });
-        }else{
-          this.db.transaction(function (tx) {
-            tx.executeSql('SELECT * FROM folowdata order by id desc LIMIT '+star+','+end, [], function (tx, results) {
-              vue.tableData =results.rows;
-              if(results.rows.length<pageSize){
-                vue.pageSize = 10;
-              }else{
-                vue.pageSize = results.rows.length;
-              }
-              tx.executeSql('SELECT * FROM folowdata', [], function (tx, results) {
-                vue.total =  results.rows.length;
-                }, null);
-              }, null);
-          });
-        }
-        
+            }, null);
+        });
       }
       
     },
