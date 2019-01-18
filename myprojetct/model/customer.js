@@ -476,11 +476,11 @@ var vue = new Vue({
     //提交客户数据
     enterpriseAdd : function(){
       //新增页面表单数据提交
+      vue.dialogCostoms =  false;
       let para = this.clientprimsData();
       this.db.transaction(function (tx) {
         tx.executeSql('INSERT INTO clientdata (id,name,user,contactsname,contactstel,importance,province,city,district,address) VALUES (?,?,?,?,?,?,?,?,?,?)',[vue.id,para.name,para.user,para.contacts_name,para.contacts_tel,para.importance,para.province,para.city,para.district,para.address]);
         tx.executeSql('INSERT INTO log (username,name,state,time) VALUES (?,?,?,?)', [localStorage.getItem("user"),"添加客户名称:"+para.name,"添加成功",Date.parse(new Date())]);
-        vue.dialogCostoms =  false;
         vue.closeDialog();
         vue.getData(vue.select,1,10);
       });
