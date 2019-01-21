@@ -21,6 +21,10 @@ var vue = new Vue({
         "href" : "../../view/clientuser/client.html",
         "fontpig" : "fa fa-home"
       },{
+        "regulate" : "地域平均薪资",
+        "href" : "../../view/regional/regional.html",
+        "fontpig" : "fa fa-user"
+       },{
         "regulate" : "管理员",
         "href" : "../../view/enterprise/enterprise.html",
         "fontpig" : "fa fa-user"

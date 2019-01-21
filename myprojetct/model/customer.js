@@ -476,7 +476,7 @@ var vue = new Vue({
     //提交客户数据
     enterpriseAdd : function(){
       //新增页面表单数据提交
-      vue.dialogCostoms =  false;
+      this.dialogCostoms =  false;
       let para = this.clientprimsData();
       this.db.transaction(function (tx) {
         tx.executeSql('INSERT INTO clientdata (id,name,user,contactsname,contactstel,importance,province,city,district,address) VALUES (?,?,?,?,?,?,?,?,?,?)',[vue.id,para.name,para.user,para.contacts_name,para.contacts_tel,para.importance,para.province,para.city,para.district,para.address]);
@@ -541,10 +541,11 @@ var vue = new Vue({
     //修改数据提交
     enterpriseedit : function(){
       var data = this.clientprimsData();
+      this.dialogCostoms =  false;
       this.db.transaction(function (tx) {
          tx.executeSql('UPDATE clientdata SET name=\''+data.name+'\',user=\''+data.user+'\',contactsname=\''+data.contacts_name+'\',contactstel=\''+data.contacts_tel+'\',importance=\''+data.importance+'\',province=\''+data.province+'\',city=\''+data.city+'\',district=\''+data.district+'\',address=\''+data.address+'\'  WHERE id='+data.id);
          tx.executeSql('INSERT INTO log (username,name,state,time) VALUES (?,?,?,?)', [localStorage.getItem("user"),"修改客户"+vue.clientDetail[0].name+"相关信息","修改成功",Date.parse(new Date())]);
-         vue.dialogCostoms =  false;
+        
          vue.closeDialog();
          vue.getData(vue.select,1,10);
        });

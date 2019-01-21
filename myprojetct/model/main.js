@@ -101,14 +101,14 @@ var vue = new Vue({
     //默认保存区域数据
     pushregion : function(){
         var length = 0;
-        var data = [{region:"北京",value:15000},{region:"上海",value:13000},{region:"深圳",value:11000},{region:"广州",value:10000},{region:"杭州",value:11200},{region:"成都",value:10000},{region:"西安",value:9000},{region:"郑州",value:9800}];
+        var data = [{id:1,region:"北京",value:15000},{id:2,region:"上海",value:13000},{id:3,region:"深圳",value:11000},{id:4,region:"广州",value:10000},{id:5,region:"杭州",value:11200},{id:6,region:"成都",value:10000},{id:7,region:"西安",value:9000},{id:8,region:"郑州",value:9800}];
         this.db.transaction(function (tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS region (name,value)');
+            tx.executeSql('CREATE TABLE IF NOT EXISTS region (id,name,value)');
             tx.executeSql('SELECT * FROM region', [], function (tx, results) {
                 length = results.rows.length;
                 if(length<=0){
                     for(var i=0;i<data.length;i++){
-                        tx.executeSql('INSERT INTO region (name,value) VALUES (?,?)',[data[i].region,data[i].value]);
+                        tx.executeSql('INSERT INTO region (id,name,value) VALUES (?,?,?)',[data[i].id,data[i].region,data[i].value]);
                     }
                 }
             }, null);

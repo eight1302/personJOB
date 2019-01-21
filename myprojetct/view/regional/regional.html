@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>个人服务系统</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="../../css/enterprise.css">
+</head>
+ <body>
+  <div id="app" v-cloak>
+    <section class="top" style="z-index: 10;top:0;">
+      <h1 class="title">
+        <span>地域薪资</span>
+      </h1>
+      <div class="search">
+          <el-button type="primary" @click="addNewEnterprise">新建</el-button>
+      </div>
+    </section>
+    <section class="col-md-12">
+      <div class="col-md-12" style="margin-top:60px;">
+        <el-table ref="multipleTable" :data="tableData" border tooltip-effect="dark" style="width: 100%;" :max-height="tableHeight">
+          <el-table-column  prop="name" label="地域" show-overflow-tooltip></el-table-column>
+          <el-table-column  prop="value" label="平均薪资" ></el-table-column>
+          <el-table-column  label="操作" >
+            <template scope="scope">
+              <el-button type="success" @click="hasComplete(scope.row.id,scope.row.name)" style="height: 30px;line-height: 0;">修改</el-button>
+              <el-button type="primary" @click="hasCancel(scope.row.id,scope.row.name)" style="height: 30px;line-height: 0;">删除</el-button>       
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="col-md-12 block" style="float:right;">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total"  style="float: right;margin-top:10px;">
+          </el-pagination>
+        </div>
+    </section>
+    <section>
+      <!--新建、修改客户公用表单-->
+      <el-dialog :title="title_enterprise[EnterpriseStatus]" :visible.sync="dialogCostoms" style="display:none;">
+        <el-col :span="24">
+          <el-form @submit.prevent="submit" ref="form" :model="client">
+            <el-form-item label="城市" :label-width="formLabelWidth">
+              <el-input v-model="client.name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="薪资" :label-width="formLabelWidth">
+              <el-input v-model="client.value" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogCostoms = false">取 消</el-button>
+          <el-button type="primary" @click="dialogAdd">确 定</el-button>
+        </div>
+      </el-dialog>
+    </section>
+  </div>
+  <script src="../../model/vue.js"></script>
+  <script src="../../model/index.js"></script>
+  <script src="../../model/moment.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="../../model/refional.js"></script>
+</body>
+</html>

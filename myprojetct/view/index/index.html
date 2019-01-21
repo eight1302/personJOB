@@ -20,7 +20,7 @@
         <el-col :span="24" style="border:1px solid #eee;margin-bottom:10px;">
           <el-col :span="24" class="fxtital">
             <span >地域程序员薪资水平</span>
-            <el-button type="primary" @click="addregion" style="float: right;height: 35px;border: 1px solid #fff;margin-top: 2px;margin-right: 10px;">新增地域</el-button>
+            <!-- <el-button type="primary" @click="addregion" style="float: right;height: 35px;border: 1px solid #fff;margin-top: 2px;margin-right: 10px;">新增地域</el-button> -->
           </el-col>
           <el-col :span="24">
             <div id="fxdashboard2" class="echare1" style="border:none;height:328px;"></div>
@@ -105,7 +105,7 @@
           </el-col>
         </el-col>
       </section>
-      <el-dialog title="新增地域信息" :visible.sync="smsdialog" style="display:none;">
+      <!-- <el-dialog title="新增地域信息" :visible.sync="smsdialog" style="display:none;">
           <el-form :model="regionadds" @submit.prevent="submit">
             <el-form-item label="城市" :label-width="formLabelWidth">
               <el-input v-model="regionadds.name" auto-complete="off"></el-input>
@@ -118,7 +118,7 @@
             <el-button @click="smsdialog = false" class="cancelsms">取 消</el-button>
             <el-button type="primary" @click="smsbtn">确 定</el-button>
           </div>
-        </el-dialog>
+        </el-dialog> -->
     </div>
 <script src="../../model/echarts.min.js"></script>
 <script src="../../model/vue.js"></script>
