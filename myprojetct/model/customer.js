@@ -473,13 +473,22 @@ var vue = new Vue({
       }
     },
 
+    timeFormat : function(timestamp){
+      //timestamp是整数，否则要parseInt转换,不会出现少个0的情况
+        var time = new Date(timestamp);
+        var year = time.getFullYear();
+        var month = time.getMonth()+1;
+        var date = time.getDate();
+        return year+'-'+(month>9?month:'0'+month)+'-'+(date>9?date:'0'+date);
+      },
+
     //提交客户数据
     enterpriseAdd : function(){
       //新增页面表单数据提交
       this.dialogCostoms =  false;
       let para = this.clientprimsData();
       this.db.transaction(function (tx) {
-        tx.executeSql('INSERT INTO clientdata (id,name,user,contactsname,contactstel,importance,province,city,district,address) VALUES (?,?,?,?,?,?,?,?,?,?)',[vue.id,para.name,para.user,para.contacts_name,para.contacts_tel,para.importance,para.province,para.city,para.district,para.address]);
+        tx.executeSql('INSERT INTO clientdata (id,name,user,contactsname,contactstel,importance,province,city,district,address,time) VALUES (?,?,?,?,?,?,?,?,?,?,?)',[vue.id,para.name,para.user,para.contacts_name,para.contacts_tel,para.importance,para.province,para.city,para.district,para.address,vue.timeFormat(Date.parse(new Date()))]);
         tx.executeSql('INSERT INTO log (username,name,state,time) VALUES (?,?,?,?)', [localStorage.getItem("user"),"添加客户名称:"+para.name,"添加成功",Date.parse(new Date())]);
         vue.closeDialog();
         vue.getData(vue.select,1,10);

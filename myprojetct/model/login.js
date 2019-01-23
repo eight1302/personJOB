@@ -40,7 +40,7 @@ var vue = new Vue({
          tx.executeSql('CREATE TABLE IF NOT EXISTS userData (id,user,pass,time)');
          tx.executeSql('CREATE TABLE IF NOT EXISTS log (username,name,state,time)');
          tx.executeSql('CREATE TABLE IF NOT EXISTS folowdata (id,clientname,callbackway,planname,contactname,user,callbackdate,noticetime,status,info,time)');
-         tx.executeSql('CREATE TABLE IF NOT EXISTS clientdata (id,user,name,contactsname,contactstel,importance,province,city,district,address)');
+         tx.executeSql('CREATE TABLE IF NOT EXISTS clientdata (id,user,name,contactsname,contactstel,importance,province,city,district,address,time)');
          //判断数据中是否存在用户名，密码
          tx.executeSql('SELECT * FROM userData', [], function (tx, results) {
           if(results.rows.length<=0){

@@ -9,6 +9,7 @@ var vue = new Vue({
       this.getregion();    //获取数据
       this.joinJob();      //就业比例
       this.saleComent();
+      this.custrend();     //客户数据分析
   },
   data:{
     form:{
@@ -29,43 +30,10 @@ var vue = new Vue({
         time : [],
         series : [],
     },
-    sale : { //销售趋势时间段
-        saledata1 : '',
-        saledata2 : '',
-        company : 'R01',
-        brand : 'all',
-        dimension : '100000.110',
-        type : '11',
-        list : ['index33','index16','index36','index37']
-    },
     saleAnalysis : { //销售趋势分析
 
     },
-    section : {//部门月销售数据分析
-        target : '',
-        accomplish : '',
-        finishingRate : '',
-        clientSale : '',
-        lossSale : ''
-    }, 
-    clientTime : { //客户趋势时间
-        saledata1 : '',
-        saledata2 : '',
-        company : 'R01',
-        brand : 'all',
-        dimension : '100000.110',
-        type : '11',
-        list : ['index1','index2','index7','index8','index3','index4','index5']
-    },
-    cusdatafx : {  //客户数据分析
-        time : '',
-        company : 'R01',
-        brand : 'all',
-        conditions : 'all',
-        dimension : '100000.110',
-        type : '11',
-        list : ['index1','index2','index7','index8','index3','index4','index5']
-    },
+
     clienData :{
         data : {
             after : '',
@@ -76,10 +44,6 @@ var vue = new Vue({
         index1 : [],
         index2 :[],
         index3 :[],
-    },
-    funnelld : { //漏斗图
-        detail : [],
-        series : []
     },
     width_home:''
   },
@@ -372,109 +336,69 @@ var vue = new Vue({
         // 使用刚指定的配置项和数据显示图表。
         mychartcus.setOption(option);
         window.addEventListener("resize",function(){
-            mychartsale.resize(); 
+            mychartcus.resize(); 
         });
     },
 
-
-      //部门销售数据分析
-      departmentSale : function(url){
-          //请求数据
-         
-      },
-
-      //获取销售趋势分析的数据
-      saleTrand:function(url){
-         
-      },
-
+    //获取当前月当前日期以及开始日期的数据
+    getMonthAll : function() {
+        var myDate = new Date();
+        //获取当前年
+        var year=myDate.getFullYear();
+        //获取当前月
+        var month=myDate.getMonth()+1;
+        var current = myDate.getDate();
+        var dateArry = new Array();
+        for(var i=1;i<=current;i++){
+            dateArry.push(year+'-'+(month>9?month:'0')+month+'-'+(i>9?i:'0'+i));
+        }
+        return dateArry;
+    },
 
       /**
        * 客户趋势分析请求接口数据整合
        *  请求后台接口 
       */
-      custrend:function (url) {
-         
+      custrend:function () {
+        this.custrand.detail = ['客户总数'];
+        this.custrand.time = this.getMonthAll();
+        this.ClientEcharts(this.custrand.time);
       },
 
-       //调用客户趋势展示的方法
-      ClientEcharts : function(timeData,datashow){
-           //this.clientTime
-          var data1 = new Array(), //客户总数
-              data2 = new Array(), //新增客户
-              data3 = new Array(), //近3月成交客户数
-              data4 = new Array(), //近6月成交客户数
-              data5 = new Array(), //近12月成交客户数
-              data6 = new Array(), //跟进客户
-              data7 = new Array(); //跟进次数
-          for(let i=0;i<datashow.length;i++){
-              for(let j=0;j<timeData.length;j++){
-                  if(timeData[j] == datashow[i].data_date){
-                      data1.push({'time':timeData[j],value:datashow[i].index1?datashow[i].index1:0}); //客户总数
-                      data2.push({'time':timeData[j],value:datashow[i].index2?datashow[i].index2:0}); //新增客户
-                      data3.push({'time':timeData[j],value:datashow[i].index3?datashow[i].index3:0}); //近3月成交客户数
-                      data4.push({'time':timeData[j],value:datashow[i].index4?datashow[i].index4:0}); //近6月成交客户数
-                      data5.push({'time':timeData[j],value:datashow[i].index5?datashow[i].index5:0}); //近12月成交客户数
-                      data6.push({'time':timeData[j],value:datashow[i].index7?datashow[i].index7:0}); //跟进客户
-                      data7.push({'time':timeData[j],value:datashow[i].index8?datashow[i].index8:0}); //跟进次数
+       timeFormat : function(timestamp){
+        //timestamp是整数，否则要parseInt转换,不会出现少个0的情况
+          var time = new Date(timestamp);
+          var year = time.getFullYear();
+          var month = time.getMonth()+1;
+          var date = time.getDate();
+          return year+'-'+(month>9?month:'0'+month)+'-'+(date>9?date:'0'+date);
+        },
 
-                  }else{
-                      data1.push({'time':timeData[j],value:0});
-                      data2.push({'time':timeData[j],value:0});
-                      data3.push({'time':timeData[j],value:0});
-                      data4.push({'time':timeData[j],value:0});
-                      data5.push({'time':timeData[j],value:0});
-                      data6.push({'time':timeData[j],value:0});
-                      data7.push({'time':timeData[j],value:0});
-                  }
-              }
-          }
+       //调用客户趋势展示的方法
+      ClientEcharts : function(timeData){
+
+           //this.clientTime
+        var data1 = new Array(); //客户总数
+        for(let j=0;j<timeData.length;j++){
+            this.db.transaction(function (tx) {
+                tx.executeSql('SELECT * FROM clientdata where time='+"'"+timeData[j]+"'", [], function (tx, results) {
+                    console.log(results.rows.length);
+                    data1.push(results.rows.length);
+                    vue.customertrend();
+                }, null);
+            });
+        }
+        console.log(data1);
           this.custrand.series =  [
               {
                   name:'客户总数',
                   type:'line',
                   stack: '',
-                  data: this.heavy1(data1,timeData)
-              },{
-                  name:'新增客户',
-                  type:'line',
-                  stack: '',
-                  data:this.heavy1(data2,timeData)
-              },
-              {
-                  name:'近3月成交客户数',
-                  type:'line',
-                  stack: '',
-                  data:this.heavy1(data3,timeData)
-              },
-              {
-                  name:'近6月成交客户数',
-                  type:'line',
-                  stack: '',
-                  data: this.heavy1(data4,timeData)
-              },
-              {
-                  name:'近12月成交客户数',
-                  type:'line',
-                  stack: '',
-                  data: this.heavy1(data5,timeData)
-              },
-              {
-                  name:'跟进客户',
-                  type:'line',
-                  stack: '',
-                  data: this.heavy1(data6,timeData)
-              },
-              {
-                  name:'跟进次数',
-                  type:'line',
-                  stack: '',
-                  data:this.heavy1(data7,timeData)
+                  data: data1
               }
           ];
-          //客户折线图展示
-          this.customertrend();
       },
+
 
       //客户趋势分析
       customertrend:function(){
