@@ -10,28 +10,22 @@ var vue = new Vue({
     navdata : [
       {
         "regulate" : "首页",
-        "href" : "../../view/index/index.html",
-        "fontpig" : "fa fa-home"
+        "href" : "../../view/index/index.html"
       },{
         "regulate" : "客户管理",
-        "href" : "../../view/client/client.html",
-        "fontpig" : "fa fa-home"
+        "href" : "../../view/client/client.html"
       },{
         "regulate" : "跟进计划",
-        "href" : "../../view/clientuser/client.html",
-        "fontpig" : "fa fa-home"
+        "href" : "../../view/clientuser/client.html"
       },{
         "regulate" : "地域平均薪资",
-        "href" : "../../view/regional/regional.html",
-        "fontpig" : "fa fa-user"
+        "href" : "../../view/regional/regional.html"
        },{
         "regulate" : "管理员",
-        "href" : "../../view/enterprise/enterprise.html",
-        "fontpig" : "fa fa-user"
+        "href" : "../../view/enterprise/enterprise.html"
        },{
         "regulate" : "日志管理",
-        "href" : "../../view/log/log.html",
-        "fontpig" : "fa fa-user"
+        "href" : "../../view/log/log.html"
        }
     ],
     height:{height:''},  //详情页统一高度样式

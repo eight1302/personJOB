@@ -15,18 +15,17 @@
 </head>
  <body>
   <div id="app" style="min-width: 1080px;" v-cloak>
-    <el-col :span="3" style="background: #545c64;" :style="height">
+    <el-col :span="2" style="background: #545c64;" :style="height">
       <el-menu class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#fff" >
         <el-menu-item v-for="(item,index) in navdata" @click="gourl(item.href)">
-          <i class="el-icon-menu" style="color:#fff;"></i>
           <span slot="title">{{item.regulate}}</span>
         </el-menu-item>
       </el-menu>
     </el-col>
-    <el-col :span="21" style="height:56px;background: #545c64;">
+    <el-col :span="22" style="height:56px;background: #545c64;">
       <el-button type="info" @click="out" style="float:right; margin-right: 10px;margin-top: 3px;border-color: #fff;">退出</el-button>
     </el-col>
-    <el-col :span="21" :style="height1">
+    <el-col :span="22" :style="height1">
         <iframe name="iframename" v-bind:src="tourl" frameborder="0" width="100%" scrolling="auto" :style="height1" style="overflow: auto;"></iframe>
     </el-col>
   </div>
