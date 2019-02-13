@@ -101,9 +101,9 @@ var vue = new Vue({
       this.tableData.length=0;
       var star = currentPage*pageSize-pageSize,
       end = pageSize;
-      if(name !=''){
+      if(name.user !=''){
         this.db.transaction(function (tx) {
-          tx.executeSql('SELECT * FROM userData WHERE user="'+name+'" order by time desc LIMIT '+star+','+end, [], function (tx, results) {
+          tx.executeSql('SELECT * FROM userData WHERE user="'+name.user+'" order by time desc LIMIT '+star+','+end, [], function (tx, results) {
             vue.tableData =results.rows;
             if(results.rows.length<pageSize){
               vue.pageSize = 10;
