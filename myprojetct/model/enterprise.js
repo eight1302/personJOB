@@ -101,9 +101,9 @@ var vue = new Vue({
       this.tableData.length=0;
       var star = currentPage*pageSize-pageSize,
       end = pageSize;
-      if(name.user !=''){
+      if(name !=''){
         this.db.transaction(function (tx) {
-          tx.executeSql('SELECT * FROM userData WHERE user="'+name.user+'" order by time desc LIMIT '+star+','+end, [], function (tx, results) {
+          tx.executeSql('SELECT * FROM userData WHERE user="'+name+'" order by time desc LIMIT '+star+','+end, [], function (tx, results) {
             vue.tableData =results.rows;
             if(results.rows.length<pageSize){
               vue.pageSize = 10;
@@ -134,7 +134,7 @@ var vue = new Vue({
 
     //监听搜索条件的变化
     change:function() {
-      this.getData(this.select,1,10);  //方法相互调用
+      this.getData(this.select.user,1,10);  //方法相互调用
     },
 
     //每页显示数据量变更
